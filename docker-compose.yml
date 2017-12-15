@@ -1,0 +1,16 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/log:/var/log/nginx
+    ports:
+      - "8080:80"
+    environment:
+      - TZ=Asia/Shanghai
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    command: sh -c "apk add --no-cache tzdata && nginx -g 'daemon off;'"
