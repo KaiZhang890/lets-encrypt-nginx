@@ -7,10 +7,27 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/log:/var/log/nginx
-    ports:
-      - "8080:80"
     environment:
       - TZ=Asia/Shanghai
-      - NGINX_HOST=localhost
-      - NGINX_PORT=80
+      - VIRTUAL_HOST=n0tail.com,www.n0tail.com
+      - LETSENCRYPT_HOST=n0tail.com,www.n0tail.com
+      - LETSENCRYPT_EMAIL=kaixuan166@gmail.com
     command: sh -c "apk add --no-cache tzdata && nginx -g 'daemon off;'"
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./nginx/vhost.d:/etc/nginx/vhost.d"
+      - "./nginx/html:/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "./nginx/certs:/etc/nginx/certs"
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
