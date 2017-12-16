@@ -1,15 +1,21 @@
-version: '2'
+version: '3'
 services:
   nginx:
-    image: nginx:stable-alpine
+    build: .
     restart: unless-stopped
     volumes:
+      - ./crontab:/var/spool/cron/crontabs/root
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/log:/var/log/nginx
     ports:
-      - 80:80
+      - 8080:80
       - 443:443
     environment:
       - TZ=Asia/Shanghai
-    command: sh -c "apk add --no-cache tzdata && nginx -g 'daemon off;'"
+    command: >
+      sh -c "crond &&
+             nginx -g 'daemon off;'"
+
+            #  certbot certonly --webroot -w /usr/share/nginx/html -d www.n0tail.com -d n0tail.com --email="kaixuan166@gmail.com" --verbose --noninteractive --quiet --agree-tos
+            #  certbot renew --quiet --no-self-upgrade // 90 days
