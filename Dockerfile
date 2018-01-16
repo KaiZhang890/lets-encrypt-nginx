@@ -1,4 +1,3 @@
 FROM nginx:stable-alpine
 
-RUN apk add --no-cache tzdata
-RUN apk add --no-cache certbot
+RUN apk --update add --no-cache tzdata certbot openrc
