@@ -16,5 +16,3 @@ services:
     command: >
       sh -c "crond &&
              nginx -g 'daemon off;'"
-            #  certbot certonly --webroot -w /usr/share/nginx/html -d www.n0tail.com -d n0tail.com --email='kaixuan166@gmail.com' --verbose --noninteractive --quiet --agree-tos
-            #  certbot renew --quiet --no-self-upgrade
